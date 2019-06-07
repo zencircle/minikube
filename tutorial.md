@@ -2,7 +2,7 @@
 `$brew install kubernetes-cli`
 
 ### Install minikube 
-Start minikube 
+Start minikube    
 `$brew cask install minikube`
 
 ### Documentation

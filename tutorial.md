@@ -3,7 +3,7 @@
 
 ### Install minikube 
 Start minikube 
-$brew cask install minikube
+`$brew cask install minikube`
 
 ### Documentation
 https://kubernetes.io/docs/tutorials/hello-minikube/   

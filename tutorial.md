@@ -87,8 +87,8 @@ http://localhost:8080
 ### Test Service using "NodePort"
 ```
 minikube service hello-minikube
-http://192.168.99.100:31228/
 ```
+http://192.168.99.100:31228/
 ### Scaling Deployment (Change replicas from 1 to 2)
 ```
 kubectl scale --replicas=2 deployment hello-minikube

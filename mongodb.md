@@ -36,3 +36,13 @@ http://192.168.99.100:32017
 
 curl  http://192.168.99.100:32017
 It looks like you are trying to access MongoDB over HTTP on the native driver port.
+
+MONGODB EXPRESS
+docker run -it --rm \
+    --name mongo-express \
+    -p 8081:8081 \
+    -e ME_CONFIG_MONGODB_SERVER="192.168.99.100" \
+    -e ME_CONFIG_MONGODB_PORT="32017" \
+    mongo-express
+
+http://localhost:8081/

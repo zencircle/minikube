@@ -86,6 +86,8 @@ http://localhost:8080
 
 ### Test Service using "NodePort"
 ```
+minikube service hello-minikube --url
+http://192.168.99.100:31228
 minikube service hello-minikube
 ```
 http://192.168.99.100:31228/

@@ -23,20 +23,18 @@ kubectl apply -f https://k8s.io/examples/application/cassandra/cassandra-statefu
 Note: If you running low on resources you could have a single instance
 kubectl scale --replicas=1 statefulset cassandra
 ```
-Add credentials for Cassandra
+5. Add credentials for Cassandra
 
 ```shell
 kubectl create secret generic cassandra-credentials --from-literal=cassandra.username=<username> --from-literal=cassandra.password=<password>
 kubectl create secret generic cassandra-credentials --from-literal=cassandra.username=cassandra --from-literal=cassandra.password=cassandra
 ```
-Add institution api credentails
+5. Add institution api credentails
 ```
 kubectl create secret generic inst-postgres-credentials --from-literal=username=postgres --from-literal=password=postgres --from-literal=host=postgres --from-literal=url="jdbc:postgresql://postgresql:5432/hmda?user=hmda&password=password&sslmode=require&ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory"
 ```
-
-
 HMDA-PLATFORM
-Download git repo
+6. Download git repo
 ```
 git clone https://github.com/cfpb/hmda-platform/
 cd hmda-platform
@@ -44,11 +42,11 @@ cd hmda-platform
 If required, sync with a remote Git repository
 git pull origin master
 ```
-Add config maps required to hmda-platform 
+7. Add config-maps required to hmda-platform 
 ```
 kubectl apply -f kubernetes/config-maps/minikube
 ```
-Update the CPU/Memory values (minikube resources are limited)
+8. Update the CPU/Memory values (minikube resources are limited)
 ```
 grep -A6 resources kubernetes/hmda-platform/templates/deployment.yaml 
         resources:
@@ -59,7 +57,7 @@ grep -A6 resources kubernetes/hmda-platform/templates/deployment.yaml
             memory: "64Mi"
             cpu: "0.1"
 ```
-Delete affinity rules required only for production
+9. Delete affinity rules required only for production
 Edit kubernetes/hmda-platform/templates/deployment.yaml file, remove below lines
 ```
       affinity:
@@ -74,7 +72,7 @@ Edit kubernetes/hmda-platform/templates/deployment.yaml file, remove below lines
                 - "keycloak"
             topologyKey: kubernetes.io/hostname
 ```
-Install platform helm chart
+10. Install platform helm chart
 ```
 helm upgrade --install --force \
 --namespace=default \
@@ -83,22 +81,11 @@ helm upgrade --install --force \
 --set service.name=hmda-platform-api \
 hmda-platform \
 ```
-5. Install the `Jenkins` Helm Chart, as follows:
-
-* Create namespace for `Jenkins`: 
-
-```bash
-kubectl apply -f kubernetes/jenkins-namespace.yaml
-```
-
 * Add Ambassador Helm Repository
-
 ```shell
 #helm repo add datawire https://www.getambassador.io
 ```
-
 * Install Ambassador Helm Chart
-
 ```
 #helm upgrade --install --wait ambassador datawire/ambassador
 kubectl apply -f https://raw.githubusercontent.com/zencircle/minikube/master/ambassador/deployment.yaml

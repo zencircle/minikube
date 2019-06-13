@@ -17,7 +17,7 @@ kubectl create -f https://raw.githubusercontent.com/istio/istio/master/install/k
 helm init --service-account tiller
 ```
 ### Install [Cassandra](https://kubernetes.io/docs/tutorials/stateful-application/cassandra/). 
-Cassandra is required to be running and correctly configured for hmda-platform
+Cassandra is required to be running and configured for hmda-platform
 ```
 kubectl apply -f https://k8s.io/examples/application/cassandra/cassandra-service.yaml
 kubectl apply -f https://k8s.io/examples/application/cassandra/cassandra-statefulset.yaml
@@ -82,7 +82,6 @@ hmda-platform \
 ```
 11. Install **[Ambassador](https://www.getambassador.io/user-guide/getting-started/)** API Gateway
 ```
-#helm upgrade --install --wait ambassador datawire/ambassador
 kubectl apply -f https://raw.githubusercontent.com/zencircle/minikube/master/ambassador/deployment.yaml 
 kubectl apply -f https://raw.githubusercontent.com/zencircle/minikube/master/ambassador/service.yaml
 ```
@@ -133,9 +132,53 @@ Make sure the two secrets are created: `realm` from the file under `/kubernetes/
 with the key `password` set to the Postgres password.  Find the URL of the Postgres database, and then install Keycloak with 
 this command:
 
-```bash
-helm upgrade -i -f kubernetes/keycloak/values.yaml keycloak stable/keycloak --set keycloak.persistence.dbHost="<db URL>"
+2. Update the CPU/Memory values (minikube resources are limited)
+Edit `kubernetes/keycloak/values.yaml` file to mininum values
 ```
+grep -A6 resources kubernetes/keycloak/values.yaml
+  resources:
+     limits:
+       cpu: "100m"
+       memory: "1024Mi"
+     requests:
+       cpu: "100m"
+       memory: "1024Mi"
+```
+3. Delete affinity rules required only for production
+Edit `kubernetes/keycloak/values.yaml` file, remove below lines
+```
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+          - key: app
+            operator: In
+            values:
+            - "hmda-platform"
+            - "keycloak"
+        topologyKey: kubernetes.io/hostname
+```
+Keycloak helm chart installation
+Add secerts and configs
+```
+kubectl create secret generic keycloak-credentials --from-literal=password=postgres
+kubectl create secret generic realm-secret --from-file=kubernetes/keycloak/realm.json
+kubectl apply -f kubernetes/keycloak/keycloak-https.yaml
+kubectl create -f kubernetes/keycloak/keycloak-ambassador.yaml 
+```
+helm chart
+```
+helm upgrade --install --force --namespace=default \
+--values=kubernetes/keycloak/values.yaml \
+--set keycloak.persistence.dbHost=postgresql-postgresql \
+--set keycloak.persistence.dbName=hmda \
+--set keycloak.username=keycloak \
+--set keycloak.password=keycloak \
+keycloak stable/keycloak
+```
+Manually Update Keycloak script, correct path "/opt/jboss/docker-entrypoint.sh", this fixes error
+`/scripts/keycloak.sh: line 46: /opt/jboss/tools/docker-entrypoint.sh: No such file or directory`
+kubectl edit configmap keycloak
 
 ### Install institutions-api
 The institutions-api chart has two secret dependencies: `cassandra-credentials` (which is also needed by the hmda-platform)
@@ -149,5 +192,3 @@ helm upgrade -i -f kubernetes/institutions-api/values.yaml institutions-api ./ku
 ```
 If deploying to HMDA4, run the above command without the `set` flag and it will connect automatically.
 If deploying and pointing to a new database, run with the flag `--set postgres.create-schema="true"`
-
-

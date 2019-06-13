@@ -115,42 +115,7 @@ If deploying to HMDA4, run the above command without the `set` flag and it will 
 
 If deploying and pointing to a new database, run with the flag `--set postgres.create-schema="true"`
 
-### Install modified-lar
-```bash
-helm upgrade --install --force --namespace=default \
- --values=kubernetes/modified-lar/values.yaml \
- --set image.tag=latest \
- --set image.pullPolicy=Always \
-modified-lar \
-kubernetes/modified-lar
-```
-### Install census-api
-```bash
-helm upgrade --install --force \
---namespace=default \
---values=kubernetes/census-api/values.yaml \
---set image.tag=latest \
---set image.pullPolicy=Always \
-census-api \
-kubernetes/census-api
-```
-### Install hmda-regulator
-```bash
-helm upgrade --install --force --namespace=default \
---values=kubernetes/hmda-regulator/values.yaml \
---set image.tag=latest \
---set image.pullPolicy=Always \
-hmda-regulator \
-kubernetes/hmda-regulator
-```
-### Install hmda-analytics
-```bash
-helm upgrade --install --force --namespace=default \
---values=kubernetes/hmda-analytics/values.yaml \
---set image.tag=latest \
---set image.pullPolicy=Always \
-hmda-analytics \
-kubernetes/hmda-analytics
+
 ```
 ### Install hmda-platform
 ```bash
@@ -162,37 +127,4 @@ helm upgrade --install --force --namespace=default \
 hmda-platform \
 kubernetes/hmda-platform
 ```
-### Install check-digit
-```bash
-helm upgrade --install --force --namespace=default \
---values=kubernetes/check-digit/values.yaml \
---set image.tag=master \
-check-digit \
-kubernetes/check-digit
-```
-### Install Institutions API
-6. OPTIONAL: Install [Istio](https://istio.io/) Service Mesh
 
-* Install Istio with Helm. Download the Istio distribution and run from the Istio root path:
-
-```bash
-helm install install/kubernetes/helm/istio --name istio --namespace istio-system
-```
-
-* Make sure automatic sidecar injection is supported: 
-
-```bash
-kubectl api-versions | grep admissionregistration
-```
-
-* Enable automatic sidecar injection in the `default` namespace: 
-
-```bash
-kubectl label namespace default istio-injection=enabled
-``` 
-
-To check that this operation succeeded: 
-
-```bash
-kubectl get namespace -L istio-injection
-```

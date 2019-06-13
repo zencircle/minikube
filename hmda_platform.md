@@ -81,13 +81,14 @@ helm upgrade --install --force \
 --set service.name=hmda-platform-api \
 hmda-platform \
 ```
-11. Install Ambassador
+11. Install **[Ambassador](https://www.getambassador.io/user-guide/getting-started/)** API Gateway
 ```
 #helm upgrade --install --wait ambassador datawire/ambassador
 kubectl apply -f https://raw.githubusercontent.com/zencircle/minikube/master/ambassador/deployment.yaml 
 kubectl apply -f https://raw.githubusercontent.com/zencircle/minikube/master/ambassador/service.yaml
 ```
-12. Verify hmda-platform cluster is running by checking endpoints 
+Ambassador diag : http://192.168.99.103:30101/ambassador/v0/diag/     
+12. Verify hmda-platform cluster is running by checking endpoint
 ```
 minikube service ambassador  --url
 http://192.168.99.103:30100
@@ -139,7 +140,6 @@ helm upgrade -i -f kubernetes/keycloak/values.yaml keycloak stable/keycloak --se
 ```
 
 ### Install institutions-api
-
 The institutions-api chart has two secret dependencies: `cassandra-credentials` (which is also needed by the hmda-platform)
 and `inst-postgres-credentials`.  These keys need to be created if they don't already exist.  
 * Cassandra secret keys: `cassandra.username` and `cassandra.password` 
@@ -150,8 +150,6 @@ If running locally, the Institutions API must be pointed at a local instance of 
 helm upgrade -i -f kubernetes/institutions-api/values.yaml institutions-api ./kubernetes/institutions-api/ --set cassandra.hosts="<Docker IP>"
 ```
 If deploying to HMDA4, run the above command without the `set` flag and it will connect automatically.
-
 If deploying and pointing to a new database, run with the flag `--set postgres.create-schema="true"`
-```
 
 

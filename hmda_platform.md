@@ -25,8 +25,7 @@ kubectl apply -f https://k8s.io/examples/application/cassandra/cassandra-statefu
 ### Install HMDA-PLATFORM
 1. Add credentials for Cassandra
 
-```shell
-kubectl create secret generic cassandra-credentials --from-literal=cassandra.username=<username> --from-literal=cassandra.password=<password>
+```
 kubectl create secret generic cassandra-credentials --from-literal=cassandra.username=cassandra --from-literal=cassandra.password=cassandra
 ```
 2. Add institution api credentails
@@ -87,7 +86,7 @@ hmda-platform \
 kubectl apply -f https://raw.githubusercontent.com/zencircle/minikube/master/ambassador/deployment.yaml 
 kubectl apply -f https://raw.githubusercontent.com/zencircle/minikube/master/ambassador/service.yaml
 ```
-Ambassador diag : http://192.168.99.103:30101/ambassador/v0/diag/     
+Ambassador diagnostics page : http://192.168.99.103:30101/ambassador/v0/diag/     
 12. Verify hmda-platform cluster is running by checking endpoint
 ```
 minikube service ambassador  --url

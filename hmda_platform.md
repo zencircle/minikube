@@ -1,4 +1,4 @@
-## CI/CD in Kubernetes (local)
+## HMDA Platform Kubernetes (local) Deployment
 ### Pre-requisites
 To build and run the application in Kubernetes (local development), the following steps must be taken:
 

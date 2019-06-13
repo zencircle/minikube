@@ -20,8 +20,6 @@ helm init --service-account tiller
 ```
 kubectl apply -f https://k8s.io/examples/application/cassandra/cassandra-service.yaml
 kubectl apply -f https://k8s.io/examples/application/cassandra/cassandra-statefulset.yaml
-Note: If you running low on resources you could have a single instance
-kubectl scale --replicas=1 statefulset cassandra
 ```
 5. Add credentials for Cassandra
 
@@ -31,7 +29,7 @@ kubectl create secret generic cassandra-credentials --from-literal=cassandra.use
 ```
 5. Add institution api credentails
 ```
-kubectl create secret generic inst-postgres-credentials --from-literal=username=postgres --from-literal=password=postgres --from-literal=host=postgres --from-literal=url="jdbc:postgresql://postgresql:5432/hmda?user=hmda&password=password&sslmode=require&ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory"
+kubectl create secret generic inst-postgres-credentials --from-literal=username=postgres --from-literal=password=postgres --from-literal=host=postgres --from-literal=url="jdbc:postgresql://postgresql:5432/hmda?user=hmda&password=postgres&sslmode=require&ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory"
 ```
 ### HMDA-PLATFORM
 6. Download git repo

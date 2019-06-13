@@ -1,5 +1,5 @@
 ## CI/CD in Kubernetes (local)
-
+### Pre-requisites
 To build and run the application in Kubernetes (local development), the following steps must be taken:
 
 1. Make sure that [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) is installed and configured for your system
@@ -7,31 +7,32 @@ To build and run the application in Kubernetes (local development), the followin
 ```
 minikube start --cpus=4 --memory=8192
 ```
-Make sure that `kubectl` is properly configured to point to `minikube`.  
+4. Make sure that `kubectl` is properly configured to point to `minikube`.  
 ```
 kubect1 config user-context minikube
 ```   
-3. Make sure that [Helm](https://helm.sh/) client and as well as Tiller, the server side component is installed
+5. Make sure that [Helm](https://helm.sh/) client and as well as Tiller, the server side component is installed
 ```
 kubectl create -f https://raw.githubusercontent.com/istio/istio/master/install/kubernetes/helm/helm-service-account.yaml
 helm init --service-account tiller
 ```
-4. Install [Cassandra](https://kubernetes.io/docs/tutorials/stateful-application/cassandra/). Cassandra is required to be running and correctly configured for hmda-platform
+### Install [Cassandra](https://kubernetes.io/docs/tutorials/stateful-application/cassandra/). 
+Cassandra is required to be running and correctly configured for hmda-platform
 ```
 kubectl apply -f https://k8s.io/examples/application/cassandra/cassandra-service.yaml
 kubectl apply -f https://k8s.io/examples/application/cassandra/cassandra-statefulset.yaml
 ```
-5. Add credentials for Cassandra
+### Install HMDA-PLATFORM
+1. Add credentials for Cassandra
 
 ```shell
 kubectl create secret generic cassandra-credentials --from-literal=cassandra.username=<username> --from-literal=cassandra.password=<password>
 kubectl create secret generic cassandra-credentials --from-literal=cassandra.username=cassandra --from-literal=cassandra.password=cassandra
 ```
-5. Add institution api credentails
+2. Add institution api credentails
 ```
 kubectl create secret generic inst-postgres-credentials --from-literal=username=postgres --from-literal=password=postgres --from-literal=host=postgres --from-literal=url="jdbc:postgresql://postgresql:5432/hmda?user=hmda&password=postgres&sslmode=require&ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory"
 ```
-### HMDA-PLATFORM
 6. Download git repo
 ```
 git clone https://github.com/cfpb/hmda-platform/
@@ -71,7 +72,7 @@ Edit `kubernetes/hmda-platform/templates/deployment.yaml` file, remove below lin
                 - "keycloak"
             topologyKey: kubernetes.io/hostname
 ```
-10. Install platform helm chart
+10. Install hmda-platform helm chart
 ```
 helm upgrade --install --force \
 --namespace=default \
@@ -86,15 +87,12 @@ hmda-platform \
 kubectl apply -f https://raw.githubusercontent.com/zencircle/minikube/master/ambassador/deployment.yaml 
 kubectl apply -f https://raw.githubusercontent.com/zencircle/minikube/master/ambassador/service.yaml
 ```
-12. Verify hmda-platform cluster is running endpoints 
+12. Verify hmda-platform cluster is running by checking endpoints 
 ```
 minikube service ambassador  --url
 http://192.168.99.103:30100
 ```
 http://192.168.99.103:30100/v2/cluster/  
-http://192.168.99.103:30100/v2/public/ (Not working)  
-http://192.168.99.103:30100/v2/filing/ (Not working)   
-http://192.168.99.103:30100/v2/admin/  (Not working)   
 
 ### Install hmda-platform-ui, it is frontend web-service to hmda-platform
 1. Download git repo
@@ -113,7 +111,7 @@ resources:
     cpu: 10m
     memory: 24i
 ```
-3. Install helm chart
+3. Install hmda-platform-ui helm chart
 ```
 helm upgrade --install --force \
 --values=kubernetes/hmda-platform-ui/values.yaml \
@@ -125,7 +123,8 @@ kubernetes/hmda-platform-ui
 http://192.168.99.103:30100/filing/2018/
 ### Keycloak
 
-Install [Postresql](https://github.com/helm/charts/tree/master/stable/postgresql) from helm chart
+1. Install [Postresql](https://github.com/helm/charts/tree/master/stable/postgresql) from helm chart
+Note: To similplify the configuraiton we will be sharing postgresql instance between keycloak and instituions-api
 ```
 helm install --name postgresql \
   --set postgresqlUsername=postgres,postgresqlPassword=postgres,postgresqlDatabase=hmda \

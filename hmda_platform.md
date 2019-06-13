@@ -91,10 +91,9 @@ Ambassador diag : http://192.168.99.103:30101/ambassador/v0/diag/
 12. Verify hmda-platform cluster is running by checking endpoint
 ```
 minikube service ambassador  --url
-http://192.168.99.103:30100
 ```
-http://192.168.99.103:30100/v2/cluster/  
-
+http://192.168.99.103:30100   
+http://192.168.99.103:30100/v2/cluster/    
 ### Install hmda-platform-ui, it is frontend web-service to hmda-platform
 1. Download git repo
 ```

@@ -16,7 +16,7 @@ kubect1 config user-context minikube
 kubectl create -f https://raw.githubusercontent.com/istio/istio/master/install/kubernetes/helm/helm-service-account.yaml
 helm init --service-account tiller
 ```
-4. Install [Cassandra](https://kubernetes.io/docs/tutorials/stateful-application/cassandra/)
+4. Install [Cassandra](https://kubernetes.io/docs/tutorials/stateful-application/cassandra/). Cassandra is required to be running and correctly configured for hmda-platform
 ```
 kubectl apply -f https://k8s.io/examples/application/cassandra/cassandra-service.yaml
 kubectl apply -f https://k8s.io/examples/application/cassandra/cassandra-statefulset.yaml
@@ -82,35 +82,26 @@ helm upgrade --install --force \
 --set service.name=hmda-platform-api \
 hmda-platform \
 ```
-* Add Ambassador Helm Repository
-```shell
-#helm repo add datawire https://www.getambassador.io
-```
 * Install Ambassador Helm Chart
 ```
 #helm upgrade --install --wait ambassador datawire/ambassador
-kubectl apply -f https://raw.githubusercontent.com/zencircle/minikube/master/ambassador/deployment.yaml
-
+kubectl apply -f https://raw.githubusercontent.com/zencircle/minikube/master/ambassador/deployment.yaml 
+kubectl apply -f https://raw.githubusercontent.com/zencircle/minikube/master/ambassador/service.yaml
 ```
-
-* Create Persistent Volume for Jenkins
-
-
-* Install Jenkins Chart
-
-```shell
-helm install --name jenkins -f kubernetes/jenkins-values.yaml stable/jenkins --namespace jenkins-system
+* Verify hmda-platform cluster is running endpoints 
 ```
+minikube service ambassador  --url
+http://192.168.99.103:30100
+```
+http://192.168.99.103:30100/v2/cluster/
+http://192.168.99.103:30100/v2/public/
+http://192.168.99.103:30100/v2/filing/
+http://192.168.99.103:30100/v2/admin/
 
-You can access `Jenkins` by issuing `minikube service --n jenkins-system jenkins` and logging in with `admin/admin`.
+* hmda-platform application allows filing for authenticated users, keycloak is the authentication/authorization service. Keycloak storeds it information on postgresql 
+### Keycloak
 
-Follow the on screen instructions to finalize `Jenkins` setup. When logged in, update plugins if necessary.
-
-* Docker Hub Credentials
-
-Add credentials in Jenkins for `Docker Hub` so that images can be pushed as part of `Jenkins` pipeline builds.
-
-### Install Keycloak
+Postresql
 
 Make sure the two secrets are created: `realm` from the file under `/kubernetes/keycloak`, and `keycloak-credentials`
 with the key `password` set to the Postgres password.  Find the URL of the Postgres database, and then install Keycloak with 

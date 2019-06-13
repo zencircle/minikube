@@ -82,7 +82,7 @@ helm upgrade --install --force \
 --set service.name=hmda-platform-api \
 hmda-platform \
 ```
-11. Install Ambassador Helm Chart
+11. Install Ambassador
 ```
 #helm upgrade --install --wait ambassador datawire/ambassador
 kubectl apply -f https://raw.githubusercontent.com/zencircle/minikube/master/ambassador/deployment.yaml 
@@ -93,10 +93,10 @@ kubectl apply -f https://raw.githubusercontent.com/zencircle/minikube/master/amb
 minikube service ambassador  --url
 http://192.168.99.103:30100
 ```
-http://192.168.99.103:30100/v2/cluster/
-http://192.168.99.103:30100/v2/public/ (Not working)
-http://192.168.99.103:30100/v2/filing/ (Not working)
-http://192.168.99.103:30100/v2/admin/  (Not working)
+http://192.168.99.103:30100/v2/cluster/  
+http://192.168.99.103:30100/v2/public/ (Not working)  
+http://192.168.99.103:30100/v2/filing/ (Not working)   
+http://192.168.99.103:30100/v2/admin/  (Not working)   
 
 ### Install hmda-platform-ui, it is frontend web-service to hmda-platform
 1. Download git repo
@@ -123,10 +123,16 @@ helm upgrade --install --force \
 hmda-platform-ui \
 kubernetes/hmda-platform-ui
 ```
+4. Frontend URL 
+http://192.168.99.103:30100/filing/2018/
 ### Keycloak
 
-Install Postresql
-
+Install [Postresql](https://github.com/helm/charts/tree/master/stable/postgresql) from helm chart
+```
+helm install --name postgresql \
+  --set postgresqlUsername=postgres,postgresqlPassword=postgres,postgresqlDatabase=hmda \
+    stable/postgresql
+```
 Make sure the two secrets are created: `realm` from the file under `/kubernetes/keycloak`, and `keycloak-credentials`
 with the key `password` set to the Postgres password.  Find the URL of the Postgres database, and then install Keycloak with 
 this command:

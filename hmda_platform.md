@@ -82,26 +82,50 @@ helm upgrade --install --force \
 --set service.name=hmda-platform-api \
 hmda-platform \
 ```
-* Install Ambassador Helm Chart
+11. Install Ambassador Helm Chart
 ```
 #helm upgrade --install --wait ambassador datawire/ambassador
 kubectl apply -f https://raw.githubusercontent.com/zencircle/minikube/master/ambassador/deployment.yaml 
 kubectl apply -f https://raw.githubusercontent.com/zencircle/minikube/master/ambassador/service.yaml
 ```
-* Verify hmda-platform cluster is running endpoints 
+12. Verify hmda-platform cluster is running endpoints 
 ```
 minikube service ambassador  --url
 http://192.168.99.103:30100
 ```
 http://192.168.99.103:30100/v2/cluster/
-http://192.168.99.103:30100/v2/public/
-http://192.168.99.103:30100/v2/filing/
-http://192.168.99.103:30100/v2/admin/
+http://192.168.99.103:30100/v2/public/ (Not working)
+http://192.168.99.103:30100/v2/filing/ (Not working)
+http://192.168.99.103:30100/v2/admin/  (Not working)
 
-* hmda-platform application allows filing for authenticated users, keycloak is the authentication/authorization service. Keycloak storeds it information on postgresql 
+### Install hmda-platform-ui, it is frontend web-service to hmda-platform
+1. Download git repo
+```
+git clone https://github.com/cfpb/hmda-platform-ui
+cd hmda-platform-ui/
+```
+2. Update `kubernetes/hmda-platform-ui/values.yaml` file since resources on minikube are limited
+```
+grep -A6 resources kubernetes/hmda-platform-ui/values.yaml 
+resources:
+  limits:
+    cpu: 10m
+    memory: 24Mi
+  requests:
+    cpu: 10m
+    memory: 24i
+```
+3. Install helm chart
+```
+helm upgrade --install --force \
+--values=kubernetes/hmda-platform-ui/values.yaml \
+--set image.tag=latest \
+hmda-platform-ui \
+kubernetes/hmda-platform-ui
+```
 ### Keycloak
 
-Postresql
+Install Postresql
 
 Make sure the two secrets are created: `realm` from the file under `/kubernetes/keycloak`, and `keycloak-credentials`
 with the key `password` set to the Postgres password.  Find the URL of the Postgres database, and then install Keycloak with 
@@ -125,17 +149,6 @@ helm upgrade -i -f kubernetes/institutions-api/values.yaml institutions-api ./ku
 If deploying to HMDA4, run the above command without the `set` flag and it will connect automatically.
 
 If deploying and pointing to a new database, run with the flag `--set postgres.create-schema="true"`
-
-
 ```
-### Install hmda-platform
-```bash
-helm upgrade --install --force --namespace=default \
---values=kubernetes/hmda-platform/values.yaml 
---set image.tag=latest 
---set service.name=hmda-platform-api 
---set image.pullPolicy=Always \
-hmda-platform \
-kubernetes/hmda-platform
-```
+
 

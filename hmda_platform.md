@@ -33,7 +33,7 @@ kubectl create secret generic cassandra-credentials --from-literal=cassandra.use
 ```
 kubectl create secret generic inst-postgres-credentials --from-literal=username=postgres --from-literal=password=postgres --from-literal=host=postgres --from-literal=url="jdbc:postgresql://postgresql:5432/hmda?user=hmda&password=password&sslmode=require&ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory"
 ```
-HMDA-PLATFORM
+### HMDA-PLATFORM
 6. Download git repo
 ```
 git clone https://github.com/cfpb/hmda-platform/
@@ -47,6 +47,7 @@ git pull origin master
 kubectl apply -f kubernetes/config-maps/minikube
 ```
 8. Update the CPU/Memory values (minikube resources are limited)
+Edit `kubernetes/hmda-platform/templates/deployment.yaml` file to mininum values
 ```
 grep -A6 resources kubernetes/hmda-platform/templates/deployment.yaml 
         resources:
@@ -58,7 +59,7 @@ grep -A6 resources kubernetes/hmda-platform/templates/deployment.yaml
             cpu: "0.1"
 ```
 9. Delete affinity rules required only for production
-Edit kubernetes/hmda-platform/templates/deployment.yaml file, remove below lines
+Edit `kubernetes/hmda-platform/templates/deployment.yaml` file, remove below lines
 ```
       affinity:
        podAntiAffinity:

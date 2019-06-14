@@ -79,7 +79,9 @@ helm upgrade --install --force \
 --values=kubernetes/hmda-platform/values.yaml \
 --set image.tag=latest \
 --set service.name=hmda-platform-api \
+--set hmda.runtimeMode=dev \
 hmda-platform \
+kubernetes/hmda-platform
 ```
 11. Install **[Ambassador](https://www.getambassador.io/user-guide/getting-started/)** API Gateway
 ```

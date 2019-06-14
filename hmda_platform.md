@@ -42,9 +42,10 @@ git pull origin master
 ```
 7. Add config-maps required to hmda-platform 
 ```
-kubectl apply -f kubernetes/config-maps/minikube
-```
-8. Update the CPU/Memory values (minikube resources are limited)
+kubectl apply -f kubernetes/config-maps/
+```    
+Edit `kubectl edit configmap cassandra-configmap` cassandra host value changed to `cassandra`      
+8. Update the CPU/Memory values (minikube resources are limited)     
 Edit `kubernetes/hmda-platform/templates/deployment.yaml` file to mininum values
 ```
 grep -A6 resources kubernetes/hmda-platform/templates/deployment.yaml 

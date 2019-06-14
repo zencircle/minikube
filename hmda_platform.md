@@ -44,7 +44,7 @@ git pull origin master
 ```
 kubectl apply -f kubernetes/config-maps/
 ```    
-Edit `kubectl edit configmap cassandra-configmap` cassandra host value changed to `cassandra`      
+Update `kubectl edit configmap cassandra-configmap` cassandra-hosts value to `cassandra`      
 8. Update the CPU/Memory values (minikube resources are limited)     
 Edit `kubernetes/hmda-platform/templates/deployment.yaml` file to mininum values
 ```
@@ -57,7 +57,7 @@ grep -A6 resources kubernetes/hmda-platform/templates/deployment.yaml
             memory: "64Mi"
             cpu: "0.1"
 ```
-9. Delete affinity rules required only for production
+9. Delete affinity rules required only for production    
 Edit `kubernetes/hmda-platform/templates/deployment.yaml` file, remove below lines
 ```
       affinity:
